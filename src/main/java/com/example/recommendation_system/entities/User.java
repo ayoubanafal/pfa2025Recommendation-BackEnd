@@ -31,6 +31,9 @@ public class User implements UserDetails {
     @JoinColumn(name = "preferences_id", referencedColumnName = "id")
     private UserPreferences preferences;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<EnrolledCourse> enrolledCourses;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(userRole.name()));

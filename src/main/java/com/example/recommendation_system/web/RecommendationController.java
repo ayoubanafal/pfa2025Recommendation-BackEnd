@@ -31,7 +31,7 @@ public class RecommendationController {
             return ResponseEntity.status(500).body("Error saving preferences: " + e.getMessage());
         }
     }
-
+//////// after this is called hte courses pulled from the model are stored for enrolling use
     @PostMapping("/courses")
     public ResponseEntity<?> getCourseRecommendations(@RequestBody UserPreferences preferences) {
         try {
@@ -41,7 +41,7 @@ public class RecommendationController {
             return ResponseEntity.status(500).body("Error fetching recommendations: " + e.getMessage());
         }
     }
-
+//// not working
     @GetMapping("/courses")
     public ResponseEntity<?> getAllCourses() {
         try {

@@ -1,38 +1,25 @@
 package com.example.recommendation_system.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.util.List;
 
 @Entity
-//@AllArgsConstructor
-//@NoArgsConstructor
-public class Course {
+public class EnrolledCourse {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String title;
     private String category;
-    private String level; // Beginner, Intermediate, Advanced
+    private String level;
     private double numericRatings;
     private int reviewCounts;
     private double similarity;
 
-    public Course() {
-    }
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
-    public Course(Long id, String title, String category, String level, double numericRatings, int reviewCounts, double similarity) {
-        this.id = id;
-        this.title = title;
-        this.category = category;
-        this.level = level;
-        this.numericRatings = numericRatings;
-        this.reviewCounts = reviewCounts;
-        this.similarity = similarity;
+    public EnrolledCourse() {
     }
 
     public Long getId() {
@@ -89,5 +76,24 @@ public class Course {
 
     public void setSimilarity(double similarity) {
         this.similarity = similarity;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public EnrolledCourse(Long id, String title, String category, String level, double numericRatings, int reviewCounts, double similarity, User user) {
+        this.id = id;
+        this.title = title;
+        this.category = category;
+        this.level = level;
+        this.numericRatings = numericRatings;
+        this.reviewCounts = reviewCounts;
+        this.similarity = similarity;
+        this.user = user;
     }
 }

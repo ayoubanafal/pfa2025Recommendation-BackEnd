@@ -42,19 +42,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto updateUser(Long userId, SignupRequest signupRequest) {
+    public UserDto updateUser(Long userId, SignupRequest updateUserRequest) {
         Optional<User> userOptional = userRepository.findById(userId);
         if (userOptional.isPresent()) {
             User user = userOptional.get();
 
-            if (signupRequest.getUsername() != null) {
-                user.setUsername(signupRequest.getUsername());
+            if (updateUserRequest.getUsername() != null) {
+                user.setUsername(updateUserRequest.getUsername());
             }
-            if (signupRequest.getEmail() != null) {
-                user.setEmail(signupRequest.getEmail());
+            if (updateUserRequest.getEmail() != null) {
+                user.setEmail(updateUserRequest.getEmail());
             }
-            if (signupRequest.getPassword() != null) {
-                user.setPassword(new BCryptPasswordEncoder().encode(signupRequest.getPassword()));
+            if (updateUserRequest.getPassword() != null) {
+                user.setPassword(new BCryptPasswordEncoder().encode(updateUserRequest.getPassword()));
             }
             return userRepository.save(user).getUserDto();
         }
