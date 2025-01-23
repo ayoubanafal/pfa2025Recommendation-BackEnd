@@ -1,8 +1,10 @@
 package com.example.recommendation_system.services.enrolledCourse;
 
+import com.example.recommendation_system.entities.CompletedCourse;
 import com.example.recommendation_system.entities.Course;
 import com.example.recommendation_system.entities.EnrolledCourse;
 import com.example.recommendation_system.entities.User;
+import com.example.recommendation_system.repositories.CompletedCourseRepository;
 import com.example.recommendation_system.repositories.CourseRepository;
 import com.example.recommendation_system.repositories.EnrolledCourseRepository;
 import com.example.recommendation_system.repositories.UserRepository;
@@ -15,11 +17,13 @@ public class EnrolledCourseServiceImpl implements EnrolledCourseService {
     private final CourseRepository courseRepository;
     private final UserRepository userRepository;
     private final EnrolledCourseRepository enrolledCourseRepository;
+    private final CompletedCourseRepository completedCourseRepository;
 
-    public EnrolledCourseServiceImpl(CourseRepository courseRepository, UserRepository userRepository, EnrolledCourseRepository enrolledCourseRepository) {
+    public EnrolledCourseServiceImpl(CourseRepository courseRepository, UserRepository userRepository, EnrolledCourseRepository enrolledCourseRepository, CompletedCourseRepository completedCourseRepository) {
         this.courseRepository = courseRepository;
         this.userRepository = userRepository;
         this.enrolledCourseRepository = enrolledCourseRepository;
+        this.completedCourseRepository = completedCourseRepository;
     }
 
     @Override
@@ -66,5 +70,33 @@ public class EnrolledCourseServiceImpl implements EnrolledCourseService {
     public List<EnrolledCourse> searchEnrolledCoursesByTitle(String title) {
         return enrolledCourseRepository.findEnrolledCourseByTitleContainingIgnoreCase(title);
     }
+
+    @Override
+    public void updateCourseProgress(Long enrolledCourseId, int progress) {
+        EnrolledCourse enrolledCourse = enrolledCourseRepository.findById(enrolledCourseId)
+                .orElseThrow(() -> new IllegalArgumentException("Enrolled course with ID " + enrolledCourseId + " not found"));
+
+        enrolledCourse.setProgress(progress);
+        if (progress == 100) {
+            CompletedCourse completedCourse = new CompletedCourse(
+                    enrolledCourse.getTitle(),
+                    enrolledCourse.getCategory(),
+                    enrolledCourse.getLevel(),
+                    enrolledCourse.getUser()
+            );
+            completedCourseRepository.save(completedCourse);
+            enrolledCourseRepository.delete(enrolledCourse); // Optionally remove the enrolled course
+        } else {
+            enrolledCourseRepository.save(enrolledCourse);
+        }
+    }
+    @Override
+    public List<CompletedCourse> getCompletedCoursesByUser(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User with ID " + userId + " not found"));
+        return completedCourseRepository.findCompletedCoursesByUser(user);
+    }
+
+
 }
 

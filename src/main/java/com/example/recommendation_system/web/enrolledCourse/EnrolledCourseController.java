@@ -1,5 +1,6 @@
 package com.example.recommendation_system.web.enrolledCourse;
 
+import com.example.recommendation_system.entities.CompletedCourse;
 import com.example.recommendation_system.entities.EnrolledCourse;
 import com.example.recommendation_system.services.enrolledCourse.EnrolledCourseService;
 import org.springframework.http.ResponseEntity;
@@ -46,4 +47,21 @@ public class EnrolledCourseController {
         List<EnrolledCourse> results = enrolledCourseService.searchEnrolledCoursesByTitle(title);
         return ResponseEntity.ok(results);
     }
+
+    // when doing this one from the frontend give the user the choice to go up by 10% each time
+    @PatchMapping("/{id}/progress")
+    public ResponseEntity<Void> updateProgress(@PathVariable Long id, @RequestParam int progress) {
+        enrolledCourseService.updateCourseProgress(id, progress);
+        return ResponseEntity.noContent().build();
+    }
+
+    // completed courses
+    @GetMapping("/user/completed/{userId}")
+    public ResponseEntity<List<CompletedCourse>> getCompletedCoursesByUser(@PathVariable Long userId) {
+        List<CompletedCourse> completedCourses = enrolledCourseService.getCompletedCoursesByUser(userId);
+        return ResponseEntity.ok(completedCourses);
+    }
+
+
+
 }

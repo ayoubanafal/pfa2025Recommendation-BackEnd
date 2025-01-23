@@ -14,7 +14,7 @@ public class EnrolledCourse {
     private double numericRatings;
     private int reviewCounts;
     private double similarity;
-
+    private int progress = 0;
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
@@ -86,7 +86,7 @@ public class EnrolledCourse {
         this.user = user;
     }
 
-    public EnrolledCourse(Long id, String title, String category, String level, double numericRatings, int reviewCounts, double similarity, User user) {
+    public EnrolledCourse(Long id, String title, String category, String level, double numericRatings, int reviewCounts, double similarity, User user,int progress ) {
         this.id = id;
         this.title = title;
         this.category = category;
@@ -95,5 +95,14 @@ public class EnrolledCourse {
         this.reviewCounts = reviewCounts;
         this.similarity = similarity;
         this.user = user;
+        this.progress=progress;
+    }
+
+    public int getProgress() {
+        return progress;
+    }
+
+    public void setProgress(int progress) {
+        this.progress = progress;
     }
 }
