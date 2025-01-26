@@ -27,9 +27,9 @@ public class User implements UserDetails {
     private String password;
     private UserRole userRole;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "preferences_id", referencedColumnName = "id")
-    private UserPreferences preferences;
+//    @OneToOne(cascade = CascadeType.ALL)
+//    @JoinColumn(name = "preferences_id", referencedColumnName = "id")
+//    private UserPreferences preferences;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<EnrolledCourse> enrolledCourses;
@@ -99,13 +99,13 @@ public class User implements UserDetails {
         this.userRole = userRole;
     }
 
-    public UserPreferences getPreferences() {
-        return preferences;
-    }
-
-    public void setPreferences(UserPreferences preferences) {
-        this.preferences = preferences;
-    }
+//    public UserPreferences getPreferences() {
+//        return preferences;
+//    }
+//
+//    public void setPreferences(UserPreferences preferences) {
+//        this.preferences = preferences;
+//    }
 
     public UserDto getUserDto(){
 

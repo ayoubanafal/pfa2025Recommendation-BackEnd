@@ -1,9 +1,7 @@
 package com.example.recommendation_system.services;
 
-import com.example.recommendation_system.entities.Course;
-import com.example.recommendation_system.entities.EnrolledCourse;
-import com.example.recommendation_system.entities.User;
-import com.example.recommendation_system.entities.UserPreferences;
+import com.example.recommendation_system.entities.*;
+import com.example.recommendation_system.repositories.CompletedCourseRepository;
 import com.example.recommendation_system.repositories.CourseRepository;
 import com.example.recommendation_system.repositories.EnrolledCourseRepository;
 import com.example.recommendation_system.repositories.UserRepository;
@@ -28,35 +26,54 @@ public class CourseRecommendationService {
     private final CourseRepository courseRepository;
     private final UserRepository userRepository;
     private final EnrolledCourseRepository enrolledCourseRepository;
+    private final CompletedCourseRepository completedCourseRepository;
     String flaskUrl = "http://localhost:5001/recommend";
 
-    public CourseRecommendationService(RestTemplate restTemplate, CourseRepository courseRepository, UserRepository userRepository, EnrolledCourseRepository enrolledCourseRepository) {
+    public CourseRecommendationService(RestTemplate restTemplate, CourseRepository courseRepository, UserRepository userRepository, EnrolledCourseRepository enrolledCourseRepository, CompletedCourseRepository completedCourseRepository) {
         this.restTemplate = restTemplate;
         this.courseRepository = courseRepository;
         this.userRepository = userRepository;
         this.enrolledCourseRepository = enrolledCourseRepository;
+        this.completedCourseRepository = completedCourseRepository;
     }
-
-    public String getCourseRecommendations(UserPreferences preferences) {
+    // this is the method that gets the recommendations and saves those preferences
+    public String getCourseRecommendations(UserPreferences preferences, Long userId) {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Content-Type", "application/json");
 
-        Map<String,String> pref = new HashMap<>();
-        pref.put("level",preferences.getLevel());
-        pref.put("skills", String.valueOf(preferences.getSkills()));
+        Map<String, Object> pref = new HashMap<>();
+        pref.put("level", preferences.getLevel());
+        pref.put("skills", preferences.getSkills());
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
+
+        List<String> enrolledCourses = enrolledCourseRepository
+                .findEnrolledCourseByUser(user)
+                .stream()
+                .map(EnrolledCourse::getTitle)
+                .toList();
+
+        List<String> completedCourses = completedCourseRepository
+                .findCompletedCoursesByUser(user)
+                .stream()
+                .map(CompletedCourse::getTitle)
+                .toList();
+
+        pref.put("enrolledCourses", enrolledCourses);
+        pref.put("completedCourses", completedCourses);
 
         ResponseEntity<String> response = restTemplate.postForEntity(flaskUrl, pref, String.class);
         System.out.println(response.getBody() + " responseresponseresponseresponse");
 
-        // Clear existing courses in the database
         courseRepository.deleteAll();
 
-        // Convert Flask response to Course entities and save to database
         List<Course> newCourses = parseRecommendations(response.getBody());
         courseRepository.saveAll(newCourses);
 
         return response.getBody();
     }
+
 
     private List<Course> parseRecommendations(String flaskResponse) {
         List<Course> courses = new ArrayList<>();

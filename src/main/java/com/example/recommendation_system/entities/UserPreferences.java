@@ -17,13 +17,21 @@ public class UserPreferences {
     private Long id;
 
     private String level;
-
+private Long userId;
     @ElementCollection
     @CollectionTable(name = "user_skills", joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "skill")
     private List<String> skills;
 
     private String preferredCategory;
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
 
     public Long getId() {
         return id;

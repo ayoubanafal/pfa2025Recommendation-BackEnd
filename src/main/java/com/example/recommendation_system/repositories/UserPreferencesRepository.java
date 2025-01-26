@@ -9,4 +9,6 @@ public interface UserPreferencesRepository extends JpaRepository<UserPreferences
     Optional<UserPreferences> findById(Long id);
 
     Optional<UserPreferences> findByLevelAndSkills(String level, String skills);
+
+    Optional<UserPreferences> findByUserId(Long id);
 }

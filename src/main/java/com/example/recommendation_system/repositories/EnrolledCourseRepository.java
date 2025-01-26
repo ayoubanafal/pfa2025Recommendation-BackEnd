@@ -11,4 +11,5 @@ import java.util.List;
 public interface EnrolledCourseRepository extends JpaRepository<EnrolledCourse, Long> {
     List<EnrolledCourse> findEnrolledCourseByUser(User user);
     List<EnrolledCourse> findEnrolledCourseByTitleContainingIgnoreCase(String title);
+    EnrolledCourse findEnrolledCourseByTitleContaining(String title);
 }
