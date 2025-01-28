@@ -13,4 +13,5 @@ public interface EnrolledCourseService {
     List<EnrolledCourse> searchEnrolledCoursesByTitle(String title);
     void updateCourseProgress(Long enrolledCourseId, int progress);
     List<CompletedCourse> getCompletedCoursesByUser(Long userId);
+    void unenrollFromCourse(Long courseId, Long userId);
 }

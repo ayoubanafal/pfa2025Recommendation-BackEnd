@@ -62,6 +62,12 @@ public class EnrolledCourseController {
         return ResponseEntity.ok(completedCourses);
     }
 
+    // Unenroll from a course
+    @DeleteMapping("/{courseId}/unenroll/{userId}")
+    public ResponseEntity<String> unenrollFromCourse(@PathVariable Long courseId, @PathVariable Long userId) {
+        enrolledCourseService.unenrollFromCourse(courseId, userId);
+        return ResponseEntity.ok("Successfully unenrolled from the course.");
+    }
 
 
 }

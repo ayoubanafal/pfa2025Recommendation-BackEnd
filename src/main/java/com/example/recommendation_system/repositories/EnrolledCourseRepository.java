@@ -7,9 +7,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
+
 @Repository
 public interface EnrolledCourseRepository extends JpaRepository<EnrolledCourse, Long> {
     List<EnrolledCourse> findEnrolledCourseByUser(User user);
     List<EnrolledCourse> findEnrolledCourseByTitleContainingIgnoreCase(String title);
     EnrolledCourse findEnrolledCourseByTitleContaining(String title);
+
+    Optional<EnrolledCourse> findEnrolledCourseByUserAndAndId(User user, Long courseId);
+
 }

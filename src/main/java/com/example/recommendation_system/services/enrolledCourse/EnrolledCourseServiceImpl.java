@@ -97,6 +97,18 @@ public class EnrolledCourseServiceImpl implements EnrolledCourseService {
         return completedCourseRepository.findCompletedCoursesByUser(user);
     }
 
+    @Override
+    public void unenrollFromCourse(Long courseId, Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User with ID " + userId + " not found"));
+
+        EnrolledCourse enrolledCourse = enrolledCourseRepository.findEnrolledCourseByUserAndAndId(user, courseId)
+                .orElseThrow(() -> new IllegalArgumentException("Enrolled course with ID " + courseId + " not found for user with ID " + userId));
+
+        enrolledCourseRepository.delete(enrolledCourse);
+    }
+
+
 
 }
 

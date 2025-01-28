@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.prefs.Preferences;
 
 @RestController
@@ -69,13 +70,25 @@ public class RandomRecommendations {
             excludedCourses.addAll(enrolledCourses);
             excludedCourses.addAll(completedCourses);
 
-            // Fetch the user's skills (use a placeholder if needed)
-            List<String> userSkills = preferences.get().getSkills(); // Replace this with user skills retrieval logic
+            //List<String> userSkills = preferences.get().getSkills();
+
+            // Fetch the user's skills
+            List<String> userSkills = preferences
+                    .map(UserPreferences::getSkills)
+                    .orElseThrow(() -> new RuntimeException("User preferences not found"));
+
+            // Randomize the skills order
+            shuffleAndSelectSkills(userSkills);
+
+            // If more than 4 skills, randomly select 4
+            if (userSkills.size() > 4) {
+                userSkills = userSkills.subList(0, 4);
+            }
 
             // Prepare the request payload for Flask
             Map<String, Object> payload = new HashMap<>();
-            payload.put("skills", userSkills);  // Skills should be a list of strings
-           // payload.put("excludedCourses", excludedCourses);// Exclude already enrolled/completed courses
+            payload.put("skills", userSkills);
+           // payload.put("excludedCourses", excludedCourses);
             payload.put("enrolledCourses", enrolledCourses);
             payload.put("completedCourses", completedCourses);
             System.out.println("Payload being sent to Flask: " + payload);
@@ -90,6 +103,24 @@ public class RandomRecommendations {
         }
     }
 
+    public static void shuffleAndSelectSkills(List<String> userSkills) {
+        if (userSkills == null || userSkills.isEmpty()) {
+            throw new RuntimeException("User skills not found");
+        }
 
+        // Custom shuffle using ThreadLocalRandom
+        for (int i = userSkills.size() - 1; i > 0; i--) {
+            int randomIndex = ThreadLocalRandom.current().nextInt(i + 1);
+            // Swap elements
+            String temp = userSkills.get(i);
+            userSkills.set(i, userSkills.get(randomIndex));
+            userSkills.set(randomIndex, temp);
+        }
+
+        // If more than 4 skills, randomly select 4
+        if (userSkills.size() > 4) {
+            userSkills = userSkills.subList(0, 4);
+        }
+    }
 
 }
