@@ -17,5 +17,4 @@ public interface UserPreferencesService {
 //    UserPreferences updateUserPreferences(Long id, UserPreferences userPreferences);
 
     void deleteUserPreferences(Long userId,List<String> skills);
-
 }

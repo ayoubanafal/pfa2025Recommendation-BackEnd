@@ -2,24 +2,30 @@ package com.example.recommendation_system.web.enrolledCourse;
 
 import com.example.recommendation_system.entities.CompletedCourse;
 import com.example.recommendation_system.entities.EnrolledCourse;
+import com.example.recommendation_system.repositories.CourseRepository;
 import com.example.recommendation_system.services.enrolledCourse.EnrolledCourseService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/api/enrolled-courses")
 public class EnrolledCourseController {
     private final EnrolledCourseService enrolledCourseService;
+    private final CourseRepository courseRepository;
 ////////////// i need progress in the enrolled courses
     
-    public EnrolledCourseController(EnrolledCourseService enrolledCourseService) {
+    public EnrolledCourseController(EnrolledCourseService enrolledCourseService, CourseRepository courseRepository) {
         this.enrolledCourseService = enrolledCourseService;
+        this.courseRepository = courseRepository;
     }
 
     @PostMapping("/enroll")
-    public ResponseEntity<EnrolledCourse> enrollInCourse(@RequestParam Long courseId, @RequestParam Long userId) {
+    public ResponseEntity<EnrolledCourse> enrollInCourse(@RequestParam String title, @RequestParam Long userId) {//@RequestParam Long courseId
+        System.out.println(title);
+        System.out.println(courseRepository.findCourseByTitle(title));
+        Long courseId = courseRepository.findCourseByTitle(title).getId();
         EnrolledCourse enrolledCourse = enrolledCourseService.enrollInCourse(courseId, userId);
         return ResponseEntity.ok(enrolledCourse);
     }

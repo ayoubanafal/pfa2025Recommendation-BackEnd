@@ -12,6 +12,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/user-preferences")
+@CrossOrigin(origins = "http://localhost:4200")
 public class UserPreferencesController {
 
     private final UserPreferencesService userPreferencesService;
@@ -30,11 +31,12 @@ public class UserPreferencesController {
     }
 
 
-    // Get UserPreferences by User ID
+    // Get UserPreferences by User ID////////////////////////////
     @GetMapping("/user/{userId}")
     public ResponseEntity<Optional<UserPreferences>> getUserPreferencesByUserId(@PathVariable Long userId) {
         return ResponseEntity.ok(userPreferencesService.getUserPreferencesByUserId(userId));
     }
+
 
     // Get all UserPreferences
     @GetMapping

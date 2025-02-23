@@ -8,5 +8,6 @@ import java.util.List;
 public interface CourseRepository extends JpaRepository<Course, Integer> {
     List<Course> findAllByOrderBySimilarityDesc();
     List<Course> findByCategory(String category);
+    Course findCourseByTitle(String title);
 
 }
